@@ -9,7 +9,7 @@
 #include "keypad.h"
 #include "string.h"
 
-
+void DelayTPM();
 #define DELAY 100000
 
 int main(void) {
@@ -34,13 +34,17 @@ int main(void) {
     char reset[12]={'0','0','0','0','0','0','0','0','0','0','0',0};
     int j=0;
 
+    uint8_t estado=0;
     uint8_t texto=0;
         while(1){
            	anterior=key;
            	key=read_keypad(&k);
            	switch (estado){
            	case 0: /*Ingresar la clave*/
-           		printf("Ingresar contraseña, al terminar presionar # \n");
+           		if(texto==0){
+           		 printf("Ingresar clave, al terminar presionar # \n");
+           		   texto=1;
+           		   }
         	   		if(key==0 && anterior!=0){
         			key=anterior;
         			if(key!='#'){
@@ -50,8 +54,8 @@ int main(void) {
         			}
         			else if (key=='#'){
         				printf("\n");
-        				texto=0;
         				j=0;
+        				texto=0;
         				estado=1;
         				}
         		key=0;
@@ -70,16 +74,24 @@ int main(void) {
         		}
         	break;
         	case 2:
-                 printf("Contraseña correcta\n");
+        		if(texto==0){
+        		   printf("Clave correcta\n");
+        		   texto=1;
+        	   }
+
        	   break;
 
            	case 3:
-           		printf("Contraseña incorrecta, para volver a intentarlo ingresar #\n");
+           		if(texto==0){
+           			printf("Clave incorrecta, para volver a intentarlo ingresar #\n");
+           		     texto=1;
+           	    }
+
            	  if(key==0 && anterior!=0){
            	       	    	key=anterior;
            	       	    		if(key=='#'){
-           	       	    		texto=0;
            	       	    		j=0;
+           	       	    		texto=0;
            	       	    		estado=0;
            	       	    		key=0;
            	       	    		}
